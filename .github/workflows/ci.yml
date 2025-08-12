@@ -22,12 +22,15 @@ jobs:
             - name: "Clone the repository"
               uses: actions/checkout@v2
 
-            
-            - name: "List derectories"
-              run: ls
-            
+          
             - name: "Install dependencies"
               run: npm install
 
             - name: "List derectories"
               run: ls
+
+            - name: "Run lint"
+              run: npm run lint
+
+            - name: "Run Build"
+              run: npm run build

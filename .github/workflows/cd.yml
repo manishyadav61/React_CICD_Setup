@@ -2,10 +2,10 @@ name: "CD Pipeline"
 
 on:
   workflow_run:
-    workflows: ["Sample React CI Pipeline / workflow"]
+    workflows: ["Sample React CI Pipeline / workflow"] # Name of your CI workflow
     types:
       - completed
-  workflow_dispatch:
+  workflow_dispatch: # Allows manual triggering
 
 jobs:
   deploy:
@@ -13,21 +13,30 @@ jobs:
     environment: production
 
     steps:
+      # Checkout code (needed if you want to read repo files)
+      - name: "Checkout code"
+        uses: actions/checkout@v4
+
+      # Setup Node.js
       - name: "Setup Node.js"
         uses: actions/setup-node@v4
         with:
           node-version: '21'
 
+      # Install Vercel CLI
       - name: "Setup Vercel CLI"
         run: npm install -g vercel
 
+      # Download build files from previous CI job
       - name: "Download build files"
         uses: actions/download-artifact@v4
         with:
           name: build
           run-id: ${{ github.event.workflow_run.id }}
-          github-token: ${{ github.token }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: "Deploy to vercel"
-        run: vercel --prod --token=${{ secrets.VERCEL_TOKEN }} --confirm --name=React_CICD_Setup
-    
+      # Deploy to Vercel
+      - name: "Deploy to Vercel"
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+        run: vercel --prod --token=$VERCEL_TOKEN --confirm --name=React_CICD_Setup

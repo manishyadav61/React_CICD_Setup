@@ -13,7 +13,7 @@ jobs:
     environment: production
 
     steps:
-      # Checkout code (needed if you want to read repo files)
+      # Checkout code
       - name: "Checkout code"
         uses: actions/checkout@v4
 
@@ -27,13 +27,13 @@ jobs:
       - name: "Setup Vercel CLI"
         run: npm install -g vercel
 
-      # Download build files from previous CI job
+      # Download build files from previous CI workflow
       - name: "Download build files"
-        uses: actions/download-artifact@v4
-        with:
-          name: build
-          run-id: ${{ github.event.workflow_run.id }}
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          echo "Downloading build artifact from workflow run..."
+          gh run download ${{ github.event.workflow_run.id }} --name build
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       # Deploy to Vercel
       - name: "Deploy to Vercel"

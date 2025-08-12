@@ -27,13 +27,19 @@ jobs:
       - name: "Setup Vercel CLI"
         run: npm install -g vercel
 
-      # Download build files from previous CI workflow
+      # Create separate folder and download build files there
       - name: "Download build files"
         run: |
+          mkdir -p build_artifacts
           echo "Downloading build artifact from workflow run..."
-          gh run download ${{ github.event.workflow_run.id }} --name build
+          gh run download ${{ github.event.workflow_run.id }} --name build --dir build_artifacts
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # Move build files to project root (optional, only if needed by Vercel)
+      - name: "Move build files"
+        run: |
+          cp -r build_artifacts/* ./
 
       # Deploy to Vercel
       - name: "Deploy to Vercel"

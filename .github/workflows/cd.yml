@@ -44,5 +44,5 @@ jobs:
       # Deploy to Vercel
       - name: "Deploy to Vercel"
         env:
-          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          VERCEL_TOKEN: ${{ secrets.VERCEL_T0KEN }}
         run: vercel --prod --token=$VERCEL_TOKEN --confirm --name=React_CICD_Setup
